@@ -43,7 +43,8 @@ public class MainActivity extends Activity
         Button openButton = (Button)findViewById(R.id.open);
         Button sendButton = (Button)findViewById(R.id.send);
         Button closeButton = (Button)findViewById(R.id.close);
-        myLabel = (EditText)findViewById(R.id.label);
+
+        myLabel = (TextView)findViewById(R.id.label);
         myTextbox = (EditText)findViewById(R.id.entry);
 
         //Open Button
@@ -113,7 +114,7 @@ public class MainActivity extends Activity
                 }
             }
         }
-        myLabel.setText("Bluetooth Device Found");
+        myLabel.append("Bluetooth Device Found");
     }
 
     void openBT() throws IOException
@@ -126,7 +127,7 @@ public class MainActivity extends Activity
 
         beginListenForData();
 
-        myLabel.setText("Started BlE");
+        myLabel.append("Turned on BLE");
     }
 
     void beginListenForData()
@@ -164,7 +165,7 @@ public class MainActivity extends Activity
                                     {
                                         public void run()
                                         {
-                                            myLabel.setText(data);
+                                            myLabel.append(data);
                                         }
                                     });
                                 }
@@ -191,13 +192,12 @@ public class MainActivity extends Activity
         String msg = myTextbox.getText().toString();
         msg += "\n";
         mmOutputStream.write(msg.getBytes());
-        myLabel.setText("Data Sent");
+        myLabel.append("Data Sent");
     }
 
-    void recvData() throws IOException
-    {
-        String msgs;
-    }
+    void connectMQ(){}
+
+    void publishMQ(){}
 
     void closeBT() throws IOException
     {
