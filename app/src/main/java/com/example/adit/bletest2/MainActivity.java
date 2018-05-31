@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.EditText;
@@ -18,6 +19,8 @@ import java.util.UUID;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
+
 public class MainActivity extends Activity
 {
     TextView myLabel;
@@ -47,7 +50,9 @@ public class MainActivity extends Activity
         myLabel = (TextView)findViewById(R.id.label);
         myTextbox = (EditText)findViewById(R.id.entry);
 
-        //Open Button
+        myLabel.setMovementMethod(new ScrollingMovementMethod());
+
+        //Connect Button
         openButton.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -93,7 +98,7 @@ public class MainActivity extends Activity
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter == null)
         {
-            myLabel.setText("No bluetooth adapter available");
+            myLabel.setText("No bluetooth adapter available\n");
         }
 
         if(!mBluetoothAdapter.isEnabled())
@@ -114,7 +119,7 @@ public class MainActivity extends Activity
                 }
             }
         }
-        myLabel.append("Bluetooth Device Found");
+        myLabel.append("Bluetooth Device Found\n");
     }
 
     void openBT() throws IOException
@@ -127,7 +132,7 @@ public class MainActivity extends Activity
 
         beginListenForData();
 
-        myLabel.append("Turned on BLE");
+        //myLabel.setText("Turned on BLE\n");
     }
 
     void beginListenForData()
@@ -165,7 +170,7 @@ public class MainActivity extends Activity
                                     {
                                         public void run()
                                         {
-                                            myLabel.append(data);
+                                            myLabel.append(data+"\n");
                                         }
                                     });
                                 }
@@ -192,7 +197,8 @@ public class MainActivity extends Activity
         String msg = myTextbox.getText().toString();
         msg += "\n";
         mmOutputStream.write(msg.getBytes());
-        myLabel.append("Data Sent");
+        myLabel.append("Data Sent\n");
+        myTextbox.getText().clear();
     }
 
     void connectMQ(){}
@@ -205,7 +211,7 @@ public class MainActivity extends Activity
         mmOutputStream.close();
         mmInputStream.close();
         mmSocket.close();
-        myLabel.setText("Bluetooth Closed");
+        myLabel.setText("Bluetooth Closed\n");
     }
 }
 
