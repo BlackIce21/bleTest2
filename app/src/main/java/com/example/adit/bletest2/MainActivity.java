@@ -41,6 +41,8 @@ public class MainActivity extends Activity
     EditText myTextbox;
     EditText topicTextbox;
 
+    String data = null;
+
     BluetoothAdapter mBluetoothAdapter = null;
     BluetoothSocket mmSocket = null;
     BluetoothDevice mmDevice = null;
@@ -67,6 +69,7 @@ public class MainActivity extends Activity
 
         myLabel = (TextView)findViewById(R.id.label);
         myTextbox = (EditText)findViewById(R.id.entry);
+        topicTextbox = (EditText)findViewById(R.id.topicName);
 
         myLabel.setMovementMethod(new ScrollingMovementMethod());
 
@@ -128,7 +131,7 @@ public class MainActivity extends Activity
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter == null)
         {
-            myLabel.setText("No bluetooth adapter available\n");
+            Toast.makeText(MainActivity.this, "No BLE device found", Toast.LENGTH_LONG).show();
         }
 
         if(!mBluetoothAdapter.isEnabled())
@@ -149,7 +152,7 @@ public class MainActivity extends Activity
                 }
             }
         }
-        myLabel.append("Bluetooth Device Found\n");
+        Toast.makeText(MainActivity.this, "Connected to device", Toast.LENGTH_LONG).show();
     }
 
     void openBT() throws IOException
@@ -250,7 +253,7 @@ public class MainActivity extends Activity
                                 {
                                     byte[] encodedBytes = new byte[readBufferPosition];
                                     System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
-                                    final String data = new String(encodedBytes, "US-ASCII");
+                                    data = new String(encodedBytes, "US-ASCII");
                                     readBufferPosition = 0;
 
                                     handler.post(new Runnable()
@@ -289,7 +292,7 @@ public class MainActivity extends Activity
         myTextbox.getText().clear();
     }
 
-    void connectMQ(String data){
+    void connectMQ(final String data){
 
         String clientId = MqttClient.generateClientId();
         final MqttAndroidClient client =
@@ -306,8 +309,11 @@ public class MainActivity extends Activity
                     // We are connected
                     Log.d(TAG, "onSuccess");
                     //Publishing
-                    String topic = "ctsense/pod";
-                    String payload = "";
+                    // Retreiving topic
+                    String topicName = topicTextbox.getText().toString();
+                    //String topic = "ctsense/pod";
+                    String topic = topicName;
+                    String payload = "data from sensor";
                     byte[] encodedPayload = new byte[0];
                     try {
                         encodedPayload = payload.getBytes("UTF-8");
